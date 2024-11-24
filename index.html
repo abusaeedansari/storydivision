@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Division Story Sums Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #fff;
+            padding: 20px;
+            background-color: #4682b4;
+            margin: 0;
+            font-size: 36px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 20px;
+        }
+
+        #start-container {
+            display: block;
+        }
+
+        #start-button {
+            padding: 15px 30px;
+            font-size: 24px;
+            margin: 20px auto;
+            cursor: pointer;
+            background-color: #32cd32;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            display: block;
+        }
+
+        #start-button:hover {
+            background-color: #28a428;
+        }
+
+        #name-input {
+            font-size: 24px;
+            padding: 10px;
+            width: 80%;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+
+        #level-buttons button {
+            padding: 15px 30px;
+            font-size: 24px;
+            margin: 10px;
+            cursor: pointer;
+            background-color: #ffa500;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        #level-buttons button:hover {
+            background-color: #e69500;
+        }
+
+        #question-container {
+            display: none;
+            margin-top: 30px;
+            text-align: left;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #question-number {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #333;
+            text-align: center;
+        }
+
+        #question {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            padding: 0 10px;
+            line-height: 1.5;
+        }
+
+        .input-field {
+            font-size: 20px;
+            padding: 8px;
+            width: 60%;
+            max-width: 250px;
+            margin: 10px 0;
+            display: inline-block;
+        }
+
+        #submit-button {
+            padding: 10px 20px;
+            font-size: 22px;
+            margin: 20px auto;
+            cursor: pointer;
+            background-color: #32cd32;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            display: block;
+        }
+
+        #submit-button:hover {
+            background-color: #28a428;
+        }
+
+        #feedback {
+            font-size: 24px;
+            margin-top: 20px;
+            min-height: 40px;
+            text-align: center;
+        }
+
+        #next-button {
+            padding: 10px 20px;
+            font-size: 22px;
+            margin: 20px auto;
+            cursor: pointer;
+            background-color: #32cd32;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            display: none;
+        }
+
+        #next-button:hover {
+            background-color: #28a428;
+        }
+
+        #score {
+            font-size: 24px;
+            margin-top: 30px;
+            color: #333;
+            text-align: center;
+        }
+
+        #final-score {
+            font-size: 32px;
+            margin-top: 30px;
+            color: #333;
+            text-align: center;
+        }
+
+        #restart-button {
+            padding: 15px 30px;
+            font-size: 22px;
+            margin: 20px auto;
+            cursor: pointer;
+            background-color: #ffa500;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            display: none;
+        }
+
+        #restart-button:hover {
+            background-color: #e69500;
+        }
+
+        .answer-section {
+            background-color: #e6f7ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .answer-section p {
+            font-size: 20px;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .word-bank {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 28px;
+                padding: 15px;
+            }
+
+            #question {
+                font-size: 20px;
+            }
+
+            .input-field {
+                font-size: 18px;
+                width: 100%;
+            }
+
+            #start-button, #restart-button, #submit-button, #next-button {
+                font-size: 18px;
+                padding: 10px 20px;
+            }
+
+            #name-input {
+                font-size: 20px;
+                padding: 8px;
+            }
+
+            #level-buttons button {
+                font-size: 20px;
+                padding: 10px 20px;
+            }
+
+            #feedback {
+                font-size: 20px;
+            }
+
+            #question-number, #score {
+                font-size: 20px;
+            }
+
+            #final-score {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Division Story Sums Game</h1>
+
+    <div class="container">
+        <div id="start-container">
+            <input type="text" id="name-input" placeholder="Enter your name">
+            <br>
+            <button id="start-button" onclick="startGame()">Start Game</button>
+        </div>
+
+        <div id="level-buttons" style="display:none;">
+            <h2>Select Level:</h2>
+            <button onclick="selectLevel('easy')">Easy</button>
+            <button onclick="selectLevel('medium')">Medium</button>
+            <button onclick="selectLevel('hard')">Hard</button>
+        </div>
+
+        <div id="question-container">
+            <div id="question-number"></div>
+            <div id="question"></div>
+            <div class="word-bank" id="word-bank"></div>
+            <div class="answer-section" id="answer-section"></div>
+            <button id="submit-button" onclick="checkAnswer()">Submit</button>
+            <div id="feedback"></div>
+            <button id="next-button" onclick="nextQuestion()">Next Question</button>
+            <div id="score"></div>
+        </div>
+
+        <div id="final-score"></div>
+        <button id="restart-button" onclick="restartGame()">Play Again</button>
+    </div>
+
+    <script>
+        let playerName = '';
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let level = '';
+        const totalQuestions = 30;
+
+        let questions = [];
+
+        function startGame() {
+            playerName = document.getElementById('name-input').value.trim();
+            if (playerName === '') {
+                alert('Please enter your name to start the game.');
+                return;
+            }
+            document.getElementById('start-container').style.display = 'none';
+            document.getElementById('level-buttons').style.display = 'block';
+        }
+
+        function selectLevel(selectedLevel) {
+            level = selectedLevel;
+            document.getElementById('level-buttons').style.display = 'none';
+            document.getElementById('question-container').style.display = 'block';
+            generateQuestions();
+            showQuestion();
+        }
+
+        function generateQuestions() {
+            questions = [];
+            let minDividend, maxDividend;
+            switch (level) {
+                case 'easy':
+                    minDividend = 10;
+                    maxDividend = 99;
+                    break;
+                case 'medium':
+                    minDividend = 100;
+                    maxDividend = 999;
+                    break;
+                case 'hard':
+                    minDividend = 1000;
+                    maxDividend = 9999;
+                    break;
+            }
+
+            for (let i = 0; i < totalQuestions; i++) {
+                let dividend = getRandomInt(minDividend, maxDividend);
+                let divisor = getRandomInt(2, 9);
+
+                if (divisor > dividend) {
+                    [dividend, divisor] = [divisor, dividend];
+                }
+
+                let quotient = Math.floor(dividend / divisor);
+                let remainder = dividend % divisor;
+
+                let questionTemplate = getQuestionTemplate(dividend, divisor, quotient, remainder);
+
+                questions.push(questionTemplate);
+            }
+        }
+
+        function getQuestionTemplate(dividend, divisor, quotient, remainder) {
+    // Predefined templates
+    let templates = [
+        {
+            "questionText": "If you have {dividend} {itemPlural}, and you put {divisor} {itemPlural} in each box, how many boxes will you fill and how many {itemPlural} will be left over?",
+            "wordBank": ["{itemPlural}", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
+            "toFind": "The number of boxes filled and the remaining {itemPlural}",
+            "given": {
+                "Total {itemPlural}": "",
+                "{ItemPlural} per box": ""
+            },
+            "answerSentence": "∴ You will fill _____ boxes, and _____ {itemPlural} will be left over.",
+            "correctAnswers": {
+                "Total {itemPlural}": "{dividend}",
+                "{ItemPlural} per box": "{divisor}",
+                "Number of boxes": "{quotient}",
+                "Remaining {itemPlural}": "{remainder}"
+            }
+        },
+        {
+            "questionText": "{dividend} candies are to be shared equally among {divisor} children. How many candies will each child get and how many candies will be left?",
+            "wordBank": ["candies", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
+            "toFind": "The number of candies each child gets and the remaining candies",
+            "given": {
+                "Total candies": "",
+                "Number of children": ""
+            },
+            "answerSentence": "∴ Each child gets _____ candies, and _____ candies are left.",
+            "correctAnswers": {
+                "Total candies": "{dividend}",
+                "Number of children": "{divisor}",
+                "Candies per child": "{quotient}",
+                "Remaining candies": "{remainder}"
+            }
+        },
+        {
+            "questionText": "A farmer has {dividend} {itemPlural} and packs them equally into baskets of {divisor}. How many baskets does he use and how many {itemPlural} remain?",
+            "wordBank": ["{itemPlural}", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
+            "toFind": "The number of baskets used and the remaining {itemPlural}",
+            "given": {
+                "Total {itemPlural}": "",
+                "{ItemPlural} per basket": ""
+            },
+            "answerSentence": "∴ He uses _____ baskets, and _____ {itemPlural} remain.",
+            "correctAnswers": {
+                "Total {itemPlural}": "{dividend}",
+                "{ItemPlural} per basket": "{divisor}",
+                "Number of baskets": "{quotient}",
+                "Remaining {itemPlural}": "{remainder}"
+            }
+        },
+        {
+            "questionText": "There are {dividend} pages to be divided equally into books with {divisor} pages each. How many books can be made and how many pages will be left unused?",
+            "wordBank": ["pages", "books", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
+            "toFind": "The number of books that can be made and the remaining pages",
+            "given": {
+                "Total pages": "",
+                "Pages per book": ""
+            },
+            "answerSentence": "∴ _____ books can be made, and _____ pages will be left unused.",
+            "correctAnswers": {
+                "Total pages": "{dividend}",
+                "Pages per book": "{divisor}",
+                "Number of books": "{quotient}",
+                "Remaining pages": "{remainder}"
+            }
+        },
+        {
+            "questionText": "A school has {dividend} students and wants to form teams of {divisor} students each. How many teams can be formed and how many students will be without a team?",
+            "wordBank": ["students", "teams", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
+            "toFind": "The number of teams and the remaining students",
+            "given": {
+                "Total students": "",
+                "Students per team": ""
+            },
+            "answerSentence": "∴ _____ teams can be formed, and _____ students will be without a team.",
+            "correctAnswers": {
+                "Total students": "{dividend}",
+                "Students per team": "{divisor}",
+                "Number of teams": "{quotient}",
+                "Remaining students": "{remainder}"
+            }
+        },
+        {
+            "questionText": "{dividend} {itemPlural} are to be placed equally on {divisor} shelves. How many {itemPlural} will be on each shelf and how many {itemPlural} will be left?",
+            "wordBank": ["{itemPlural}", "shelves", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
+            "toFind": "The number of {itemPlural} per shelf and the remaining {itemPlural}",
+            "given": {
+                "Total {itemPlural}": "",
+                "Number of shelves": ""
+            },
+            "answerSentence": "∴ Each shelf will have _____ {itemPlural}, and _____ {itemPlural} will be left.",
+            "correctAnswers": {
+                "Total {itemPlural}": "{dividend}",
+                "Number of shelves": "{divisor}",
+                "{ItemPlural} per shelf": "{quotient}",
+                "Remaining {itemPlural}": "{remainder}"
+            }
+        },
+        {
+            "questionText": "Mike has {dividend} marbles and puts {divisor} marbles into each bag. How many bags does he need and how many marbles will be left over?",
+            "wordBank": ["marbles", "bags", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
+            "toFind": "The number of bags needed and the remaining marbles",
+            "given": {
+                "Total marbles": "",
+                "Marbles per bag": ""
+            },
+            "answerSentence": "∴ He needs _____ bags, and _____ marbles will be left over.",
+            "correctAnswers": {
+                "Total marbles": "{dividend}",
+                "Marbles per bag": "{divisor}",
+                "Number of bags": "{quotient}",
+                "Remaining marbles": "{remainder}"
+            }
+        },
+        {
+            "questionText": "A library has {dividend} books to place on shelves that hold {divisor} books each. How many shelves will be fully occupied and how many books will be left?",
+            "wordBank": ["books", "shelves", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
+            "toFind": "The number of shelves fully occupied and the remaining books",
+            "given": {
+                "Total books": "",
+                "Books per shelf": ""
+            },
+            "answerSentence": "∴ _____ shelves will be fully occupied, and _____ books will be left.",
+            "correctAnswers": {
+                "Total books": "{dividend}",
+                "Books per shelf": "{divisor}",
+                "Number of shelves": "{quotient}",
+                "Remaining books": "{remainder}"
+            }
+        },
+        {
+            "questionText": "Sarah has {dividend} stickers and wants to place {divisor} stickers on each page of her album. How many pages will she fill and how many stickers will be left?",
+            "wordBank": ["stickers", "pages", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
+            "toFind": "The number of pages filled and the remaining stickers",
+            "given": {
+                "Total stickers": "",
+                "Stickers per page": ""
+            },
+            "answerSentence": "∴ She will fill _____ pages, and _____ stickers will be left.",
+            "correctAnswers": {
+                "Total stickers": "{dividend}",
+                "Stickers per page": "{divisor}",
+                "Number of pages": "{quotient}",
+                "Remaining stickers": "{remainder}"
+            }
+        },
+        {
+            "questionText": "A bakery has {dividend} cookies and packs them into boxes of {divisor} cookies each. How many boxes can be made and how many cookies will remain unpacked?",
+            "wordBank": ["cookies", "boxes", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
+            "toFind": "The number of boxes made and the remaining cookies",
+            "given": {
+                "Total cookies": "",
+                "Cookies per box": ""
+            },
+            "answerSentence": "∴ _____ boxes can be made, and _____ cookies will remain unpacked.",
+            "correctAnswers": {
+                "Total cookies": "{dividend}",
+                "Cookies per box": "{divisor}",
+                "Number of boxes": "{quotient}",
+                "Remaining cookies": "{remainder}"
+            }
+        },
+        // Add more templates as needed
+    ];
+
+    // List of items and their plural forms
+    let itemsList = [
+        { singular: "pencil", plural: "pencils" },
+        { singular: "book", plural: "books" },
+        { singular: "apple", plural: "apples" },
+        { singular: "orange", plural: "oranges" },
+        { singular: "toy", plural: "toys" },
+        { singular: "cookie", plural: "cookies" },
+        { singular: "bush", plural: "bushes" },
+        { singular: "leaf", plural: "leaves" },
+        { singular: "mouse", plural: "mice" },
+        { singular: "sheep", plural: "sheep" },
+        { singular: "child", plural: "children" },
+        { singular: "foot", plural: "feet" },
+        { singular: "tooth", plural: "teeth" },
+        { singular: "person", plural: "people" },
+        { singular: "knife", plural: "knives" },
+        { singular: "man", plural: "men" },
+        { singular: "woman", plural: "women" },
+        { singular: "potato", plural: "potatoes" },
+        { singular: "tomato", plural: "tomatoes" },
+    ];
+
+    // Choose a random item
+    let itemObj = itemsList[getRandomInt(0, itemsList.length - 1)];
+    let item = itemObj.singular;
+    let itemPlural = itemObj.plural;
+
+    // Select a random template
+    let template = templates[getRandomInt(0, templates.length - 1)];
+
+    // Function to capitalize first letter
+    function capitalize(word) {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+
+    // Replace placeholders in questionText
+    let questionText = template.questionText
+        .replace(/{dividend}/g, dividend)
+        .replace(/{divisor}/g, divisor)
+        .replace(/{item}/g, item)
+        .replace(/{itemPlural}/g, itemPlural)
+        .replace(/{ItemPlural}/g, capitalize(itemPlural))
+        .replace(/{Item}/g, capitalize(item))
+        .replace(/{quotient}/g, quotient)
+        .replace(/{remainder}/g, remainder);
+
+    // Replace placeholders in wordBank
+    let wordBank = template.wordBank.map(word => {
+        return word.replace(/{dividend}/g, dividend)
+            .replace(/{divisor}/g, divisor)
+            .replace(/{item}/g, item)
+            .replace(/{itemPlural}/g, itemPlural)
+            .replace(/{ItemPlural}/g, capitalize(itemPlural))
+            .replace(/{Item}/g, capitalize(item))
+            .replace(/{quotient}/g, quotient)
+            .replace(/{remainder}/g, remainder);
+    });
+
+    // Replace placeholders in toFind
+    let toFind = template.toFind
+        .replace(/{item}/g, item)
+        .replace(/{itemPlural}/g, itemPlural)
+        .replace(/{ItemPlural}/g, capitalize(itemPlural));
+
+    // Replace placeholders in given
+    let given = {};
+    for (let key in template.given) {
+        let newKey = key.replace(/{item}/g, item)
+            .replace(/{itemPlural}/g, itemPlural)
+            .replace(/{ItemPlural}/g, capitalize(itemPlural))
+            .replace(/{Item}/g, capitalize(item));
+        given[newKey] = "";
+    }
+
+    // Replace placeholders in answerSentence
+    let answerSentence = template.answerSentence
+        .replace(/{item}/g, item)
+        .replace(/{itemPlural}/g, itemPlural)
+        .replace(/{ItemPlural}/g, capitalize(itemPlural))
+        .replace(/{Item}/g, capitalize(item));
+
+    // Replace blanks with input fields
+    answerSentence = answerSentence.replace(/_____/g, "_____");
+
+    // Replace placeholders in correctAnswers
+    let correctAnswers = {};
+    for (let key in template.correctAnswers) {
+        let newKey = key.replace(/{item}/g, item)
+            .replace(/{itemPlural}/g, itemPlural)
+            .replace(/{ItemPlural}/g, capitalize(itemPlural))
+            .replace(/{Item}/g, capitalize(item));
+        let value = template.correctAnswers[key]
+            .replace(/{dividend}/g, dividend)
+            .replace(/{divisor}/g, divisor)
+            .replace(/{quotient}/g, quotient)
+            .replace(/{remainder}/g, remainder);
+        correctAnswers[newKey] = value;
+    }
+
+    return {
+        questionText: questionText,
+        wordBank: wordBank,
+        toFind: toFind,
+        given: given,
+        answerSentence: answerSentence,
+        correctAnswers: correctAnswers
+    };
+}
+
+        function showQuestion() {
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('next-button').style.display = 'none';
+            document.getElementById('submit-button').disabled = false;
+
+            let questionObj = questions[currentQuestionIndex];
+            document.getElementById('question-number').textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
+            document.getElementById('question').textContent = questionObj.questionText;
+            document.getElementById('score').textContent = `${playerName}'s Score: ${score}`;
+
+            // Display word bank
+            document.getElementById('word-bank').innerHTML = `<strong>Word Bank:</strong> ${questionObj.wordBank.join(', ')}`;
+
+            // Create answer section with blanks
+            let answerHTML = `<p><strong>To find:</strong> ${questionObj.toFind}</p>`;
+            answerHTML += `<p><strong>Given:</strong></p>`;
+            for (let key in questionObj.given) {
+                let inputId = `input-${key.replace(/\s+/g, '-')}`;
+                answerHTML += `<p>${key}: <input type="text" class="input-field" id="${inputId}"></p>`;
+            }
+
+            // Replace blanks in the answer sentence with input fields
+            let answerSentence = questionObj.answerSentence;
+            let blanks = answerSentence.match(/_____/g);
+            if (blanks) {
+                blanks.forEach((blank, index) => {
+                    let inputId = `answer-blank-${index}`;
+                    answerSentence = answerSentence.replace('_____', `<input type="text" class="input-field" id="${inputId}">`);
+                });
+            }
+            answerHTML += `<p>${answerSentence}</p>`;
+
+            document.getElementById('answer-section').innerHTML = answerHTML;
+        }
+
+        function checkAnswer() {
+            let questionObj = questions[currentQuestionIndex];
+            let isCorrect = true;
+            let feedbackMessages = [];
+
+            // Check 'Given' answers
+            for (let key in questionObj.given) {
+                let inputId = `input-${key.replace(/\s+/g, '-')}`;
+                let userAnswer = document.getElementById(inputId).value.trim();
+                if (userAnswer === questionObj.correctAnswers[key]) {
+                    // Correct
+                } else {
+                    isCorrect = false;
+                    feedbackMessages.push(`${key}: Correct answer is ${questionObj.correctAnswers[key]}`);
+                }
+            }
+
+            // Check answers in the answer sentence
+            let answerInputs = document.querySelectorAll('#answer-section input.input-field');
+            let correctAnswerKeys = Object.keys(questionObj.correctAnswers);
+            let startIndex = correctAnswerKeys.length - answerInputs.length;
+
+            answerInputs.forEach((input, index) => {
+                let userAnswer = input.value.trim();
+                let correctKey = correctAnswerKeys[startIndex + index];
+                if (userAnswer === questionObj.correctAnswers[correctKey]) {
+                    // Correct
+                } else {
+                    isCorrect = false;
+                    feedbackMessages.push(`${correctKey}: Correct answer is ${questionObj.correctAnswers[correctKey]}`);
+                }
+            });
+
+            if (isCorrect) {
+                document.getElementById('feedback').textContent = 'Correct! 🎉';
+                score += 10;
+            } else {
+                document.getElementById('feedback').innerHTML = `Incorrect.<br>${feedbackMessages.join('<br>')}`;
+            }
+            document.getElementById('score').textContent = `${playerName}'s Score: ${score}`;
+            document.getElementById('next-button').style.display = 'block';
+            disableInputs();
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < totalQuestions) {
+                showQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('final-score').innerHTML = `Great job, ${playerName}!<br>Your final score is ${score} out of ${totalQuestions * 10}.`;
+            document.getElementById('restart-button').style.display = 'block';
+        }
+
+        function restartGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('restart-button').style.display = 'none';
+            document.getElementById('final-score').textContent = '';
+            document.getElementById('start-container').style.display = 'block';
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('name-input').value = '';
+        }
+
+        function disableInputs() {
+            let inputs = document.querySelectorAll('.input-field');
+            inputs.forEach(input => input.disabled = true);
+            document.getElementById('submit-button').disabled = true;
+        }
+
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+    </script>
+</body>
+</html>
