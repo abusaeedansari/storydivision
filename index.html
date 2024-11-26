@@ -4,19 +4,22 @@
     <meta charset="UTF-8">
     <title>Division Story Sums Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Import Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: #f0f8ff;
             text-align: center;
             margin: 0;
             padding: 0;
+            color: #333;
         }
 
         h1 {
             color: #fff;
             padding: 20px;
-            background-color: #4682b4;
+            background-color: #1a8eed; /* Green header */
             margin: 0;
             font-size: 36px;
         }
@@ -37,11 +40,12 @@
             font-size: 24px;
             margin: 20px auto;
             cursor: pointer;
-            background-color: #32cd32;
+            background-color: #32cd32; /* Blue button */
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 5px;
             display: block;
+            transition: background-color 0.3s;
         }
 
         #start-button:hover {
@@ -54,6 +58,8 @@
             width: 80%;
             max-width: 300px;
             margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         #level-buttons button {
@@ -61,16 +67,17 @@
             font-size: 24px;
             margin: 10px;
             cursor: pointer;
-            background-color: #ffa500;
+            background-color: #FF9800; /* Orange buttons */
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 5px;
             width: 80%;
             max-width: 300px;
+            transition: background-color 0.3s;
         }
 
         #level-buttons button:hover {
-            background-color: #e69500;
+            background-color: #fb8c00;
         }
 
         #question-container {
@@ -80,6 +87,7 @@
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         #question-number {
@@ -104,21 +112,24 @@
             max-width: 250px;
             margin: 10px 0;
             display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
-        #submit-button {
+        #submit-button, #next-button, #restart-button {
             padding: 10px 20px;
             font-size: 22px;
             margin: 20px auto;
             cursor: pointer;
-            background-color: #32cd32;
+            background-color: #32cd32; /* Green buttons */
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 5px;
             display: block;
+            transition: background-color 0.3s;
         }
 
-        #submit-button:hover {
+        #submit-button:hover, #next-button:hover, #restart-button:hover {
             background-color: #28a428;
         }
 
@@ -127,22 +138,6 @@
             margin-top: 20px;
             min-height: 40px;
             text-align: center;
-        }
-
-        #next-button {
-            padding: 10px 20px;
-            font-size: 22px;
-            margin: 20px auto;
-            cursor: pointer;
-            background-color: #32cd32;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            display: none;
-        }
-
-        #next-button:hover {
-            background-color: #28a428;
         }
 
         #score {
@@ -159,24 +154,8 @@
             text-align: center;
         }
 
-        #restart-button {
-            padding: 15px 30px;
-            font-size: 22px;
-            margin: 20px auto;
-            cursor: pointer;
-            background-color: #ffa500;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            display: none;
-        }
-
-        #restart-button:hover {
-            background-color: #e69500;
-        }
-
         .answer-section {
-            background-color: #e6f7ff;
+            background-color: #f1f1f1;
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
@@ -186,13 +165,6 @@
             font-size: 20px;
             margin: 10px 0;
             line-height: 1.5;
-        }
-
-        .word-bank {
-            font-size: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #555;
         }
 
         @media (max-width: 600px) {
@@ -260,7 +232,6 @@
         <div id="question-container">
             <div id="question-number"></div>
             <div id="question"></div>
-            <div class="word-bank" id="word-bank"></div>
             <div class="answer-section" id="answer-section"></div>
             <button id="submit-button" onclick="checkAnswer()">Submit</button>
             <div id="feedback"></div>
@@ -335,280 +306,608 @@
         }
 
         function getQuestionTemplate(dividend, divisor, quotient, remainder) {
-    // Predefined templates
-    let templates = [
-        {
-            "questionText": "If you have {dividend} {itemPlural}, and you put {divisor} {itemPlural} in each box, how many boxes will you fill and how many {itemPlural} will be left over?",
-            "wordBank": ["{itemPlural}", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
-            "toFind": "The number of boxes filled and the remaining {itemPlural}",
-            "given": {
-                "Total {itemPlural}": "",
-                "{ItemPlural} per box": ""
-            },
-            "answerSentence": "∴ You will fill _____ boxes, and _____ {itemPlural} will be left over.",
-            "correctAnswers": {
-                "Total {itemPlural}": "{dividend}",
-                "{ItemPlural} per box": "{divisor}",
-                "Number of boxes": "{quotient}",
-                "Remaining {itemPlural}": "{remainder}"
+            // Predefined templates without word bank
+            let templates = [
+                {
+                    "questionText": "If you have {dividend} {itemPlural}, and you put {divisor} {itemPlural} in each box, how many boxes will you fill and how many {itemPlural} will be left over?",
+                    "toFind": "The number of boxes filled and the remaining {itemPlural}",
+                    "given": {
+                        "Total {itemPlural}": "",
+                        "{ItemPlural} per box": ""
+                    },
+                    "answerSentence": "∴ You will fill _____ boxes, and _____ {itemPlural} will be left over.",
+                    "correctAnswers": {
+                        "Total {itemPlural}": "{dividend}",
+                        "{ItemPlural} per box": "{divisor}",
+                        "Number of boxes": "{quotient}",
+                        "Remaining {itemPlural}": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "{dividend} candies are to be shared equally among {divisor} children. How many candies will each child get and how many candies will be left?",
+                    "toFind": "The number of candies each child gets and the remaining candies",
+                    "given": {
+                        "Total candies": "",
+                        "Number of children": ""
+                    },
+                    "answerSentence": "∴ Each child gets _____ candies, and _____ candies are left.",
+                    "correctAnswers": {
+                        "Total candies": "{dividend}",
+                        "Number of children": "{divisor}",
+                        "Candies per child": "{quotient}",
+                        "Remaining candies": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A farmer has {dividend} {itemPlural} and packs them equally into baskets of {divisor}. How many baskets does he use and how many {itemPlural} remain?",
+                    "toFind": "The number of baskets used and the remaining {itemPlural}",
+                    "given": {
+                        "Total {itemPlural}": "",
+                        "{ItemPlural} per basket": ""
+                    },
+                    "answerSentence": "∴ He uses _____ baskets, and _____ {itemPlural} remain.",
+                    "correctAnswers": {
+                        "Total {itemPlural}": "{dividend}",
+                        "{ItemPlural} per basket": "{divisor}",
+                        "Number of baskets": "{quotient}",
+                        "Remaining {itemPlural}": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "There are {dividend} pages to be divided equally into books with {divisor} pages each. How many books can be made and how many pages will be left unused?",
+                    "toFind": "The number of books that can be made and the remaining pages",
+                    "given": {
+                        "Total pages": "",
+                        "Pages per book": ""
+                    },
+                    "answerSentence": "∴ _____ books can be made, and _____ pages will be left unused.",
+                    "correctAnswers": {
+                        "Total pages": "{dividend}",
+                        "Pages per book": "{divisor}",
+                        "Number of books": "{quotient}",
+                        "Remaining pages": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A school has {dividend} students and wants to form teams of {divisor} students each. How many teams can be formed and how many students will be without a team?",
+                    "toFind": "The number of teams and the remaining students",
+                    "given": {
+                        "Total students": "",
+                        "Students per team": ""
+                    },
+                    "answerSentence": "∴ _____ teams can be formed, and _____ students will be without a team.",
+                    "correctAnswers": {
+                        "Total students": "{dividend}",
+                        "Students per team": "{divisor}",
+                        "Number of teams": "{quotient}",
+                        "Remaining students": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "{dividend} {itemPlural} are to be placed equally on {divisor} shelves. How many {itemPlural} will be on each shelf and how many {itemPlural} will be left?",
+                    "toFind": "The number of {itemPlural} per shelf and the remaining {itemPlural}",
+                    "given": {
+                        "Total {itemPlural}": "",
+                        "Number of shelves": ""
+                    },
+                    "answerSentence": "∴ Each shelf will have _____ {itemPlural}, and _____ {itemPlural} will be left.",
+                    "correctAnswers": {
+                        "Total {itemPlural}": "{dividend}",
+                        "Number of shelves": "{divisor}",
+                        "{ItemPlural} per shelf": "{quotient}",
+                        "Remaining {itemPlural}": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "Mike has {dividend} marbles and puts {divisor} marbles into each bag. How many bags does he need and how many marbles will be left over?",
+                    "toFind": "The number of bags needed and the remaining marbles",
+                    "given": {
+                        "Total marbles": "",
+                        "Marbles per bag": ""
+                    },
+                    "answerSentence": "∴ He needs _____ bags, and _____ marbles will be left over.",
+                    "correctAnswers": {
+                        "Total marbles": "{dividend}",
+                        "Marbles per bag": "{divisor}",
+                        "Number of bags": "{quotient}",
+                        "Remaining marbles": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A library has {dividend} books to place on shelves that hold {divisor} books each. How many shelves will be fully occupied and how many books will be left?",
+                    "toFind": "The number of shelves fully occupied and the remaining books",
+                    "given": {
+                        "Total books": "",
+                        "Books per shelf": ""
+                    },
+                    "answerSentence": "∴ _____ shelves will be fully occupied, and _____ books will be left.",
+                    "correctAnswers": {
+                        "Total books": "{dividend}",
+                        "Books per shelf": "{divisor}",
+                        "Number of shelves": "{quotient}",
+                        "Remaining books": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "Sarah has {dividend} stickers and wants to place {divisor} stickers on each page of her album. How many pages will she fill and how many stickers will be left?",
+                    "toFind": "The number of pages filled and the remaining stickers",
+                    "given": {
+                        "Total stickers": "",
+                        "Stickers per page": ""
+                    },
+                    "answerSentence": "∴ She will fill _____ pages, and _____ stickers will be left.",
+                    "correctAnswers": {
+                        "Total stickers": "{dividend}",
+                        "Stickers per page": "{divisor}",
+                        "Number of pages": "{quotient}",
+                        "Remaining stickers": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A bakery has {dividend} cookies and packs them into boxes of {divisor} cookies each. How many boxes can be made and how many cookies will remain unpacked?",
+                    "toFind": "The number of boxes made and the remaining cookies",
+                    "given": {
+                        "Total cookies": "",
+                        "Cookies per box": ""
+                    },
+                    "answerSentence": "∴ _____ boxes can be made, and _____ cookies will remain unpacked.",
+                    "correctAnswers": {
+                        "Total cookies": "{dividend}",
+                        "Cookies per box": "{divisor}",
+                        "Number of boxes": "{quotient}",
+                        "Remaining cookies": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "Tom has {dividend} {itemPlural} and wants to distribute them equally into {divisor} bags. How many {itemPlural} will be in each bag and how many will be left?",
+                    "toFind": "The number of {itemPlural} per bag and the remaining {itemPlural}",
+                    "given": {
+                        "Total {itemPlural}": "",
+                        "Number of bags": ""
+                    },
+                    "answerSentence": "∴ Each bag will have _____ {itemPlural}, and _____ {itemPlural} will be left.",
+                    "correctAnswers": {
+                        "Total {itemPlural}": "{dividend}",
+                        "Number of bags": "{divisor}",
+                        "{ItemPlural} per bag": "{quotient}",
+                        "Remaining {itemPlural}": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "Emma collected {dividend} shells and wants to arrange them in rows of {divisor}. How many full rows can she make and how many shells will be extra?",
+                    "toFind": "The number of full rows and the extra shells",
+                    "given": {
+                        "Total shells": "",
+                        "Shells per row": ""
+                    },
+                    "answerSentence": "∴ She can make _____ full rows, and _____ shells will be extra.",
+                    "correctAnswers": {
+                        "Total shells": "{dividend}",
+                        "Shells per row": "{divisor}",
+                        "Number of rows": "{quotient}",
+                        "Extra shells": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "{dividend} students are going on a trip. If each bus can carry {divisor} students, how many buses are needed and how many students will be in the last bus?",
+                    "toFind": "The number of buses needed and the students in the last bus",
+                    "given": {
+                        "Total students": "",
+                        "Students per bus": ""
+                    },
+                    "answerSentence": "∴ _____ buses are needed, and the last bus will have _____ students.",
+                    "correctAnswers": {
+                        "Total students": "{dividend}",
+                        "Students per bus": "{divisor}",
+                        "Number of buses": "{quotient + (remainder > 0 ? 1 : 0)}",
+                        "Students in last bus": "{remainder === 0 ? divisor : remainder}"
+                    }
+                },
+                {
+                    "questionText": "A gardener has {dividend} flowers and wants to plant them equally in {divisor} pots. How many flowers will be in each pot and how many will be left?",
+                    "toFind": "The number of flowers per pot and the remaining flowers",
+                    "given": {
+                        "Total flowers": "",
+                        "Number of pots": ""
+                    },
+                    "answerSentence": "∴ Each pot will have _____ flowers, and _____ flowers will be left.",
+                    "correctAnswers": {
+                        "Total flowers": "{dividend}",
+                        "Number of pots": "{divisor}",
+                        "Flowers per pot": "{quotient}",
+                        "Remaining flowers": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A teacher has {dividend} crayons and wants to give {divisor} crayons to each student. How many students will get crayons and how many crayons will be left?",
+                    "toFind": "The number of students who get crayons and the remaining crayons",
+                    "given": {
+                        "Total crayons": "",
+                        "Crayons per student": ""
+                    },
+                    "answerSentence": "∴ _____ students will get crayons, and _____ crayons will be left.",
+                    "correctAnswers": {
+                        "Total crayons": "{dividend}",
+                        "Crayons per student": "{divisor}",
+                        "Number of students": "{quotient}",
+                        "Remaining crayons": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "Jack has {dividend} toy cars and displays them on shelves that hold {divisor} cars each. How many shelves does he fill and how many cars are left?",
+                    "toFind": "The number of shelves filled and the remaining cars",
+                    "given": {
+                        "Total toy cars": "",
+                        "Cars per shelf": ""
+                    },
+                    "answerSentence": "∴ He fills _____ shelves, and _____ cars are left.",
+                    "correctAnswers": {
+                        "Total toy cars": "{dividend}",
+                        "Cars per shelf": "{divisor}",
+                        "Number of shelves": "{quotient}",
+                        "Remaining cars": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A chocolate bar has {dividend} pieces. If you eat {divisor} pieces each day, how many full days can you eat and how many pieces will be left?",
+                    "toFind": "The number of full days and the remaining pieces",
+                    "given": {
+                        "Total pieces": "",
+                        "Pieces per day": ""
+                    },
+                    "answerSentence": "∴ You can eat for _____ full days, and _____ pieces will be left.",
+                    "correctAnswers": {
+                        "Total pieces": "{dividend}",
+                        "Pieces per day": "{divisor}",
+                        "Number of days": "{quotient}",
+                        "Remaining pieces": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "Lisa has {dividend} beads and strings them into necklaces using {divisor} beads each. How many necklaces can she make and how many beads are left?",
+                    "toFind": "The number of necklaces and the remaining beads",
+                    "given": {
+                        "Total beads": "",
+                        "Beads per necklace": ""
+                    },
+                    "answerSentence": "∴ She can make _____ necklaces, and _____ beads are left.",
+                    "correctAnswers": {
+                        "Total beads": "{dividend}",
+                        "Beads per necklace": "{divisor}",
+                        "Number of necklaces": "{quotient}",
+                        "Remaining beads": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "There are {dividend} chairs and {divisor} tables. If you place chairs equally around each table, how many chairs will be at each table and how many chairs will be unused?",
+                    "toFind": "The number of chairs per table and the unused chairs",
+                    "given": {
+                        "Total chairs": "",
+                        "Number of tables": ""
+                    },
+                    "answerSentence": "∴ Each table will have _____ chairs, and _____ chairs will be unused.",
+                    "correctAnswers": {
+                        "Total chairs": "{dividend}",
+                        "Number of tables": "{divisor}",
+                        "Chairs per table": "{quotient}",
+                        "Unused chairs": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A box contains {dividend} candies. If you give {divisor} candies to each friend, how many friends can you give candies to and how many candies will you have left?",
+                    "toFind": "The number of friends and the remaining candies",
+                    "given": {
+                        "Total candies": "",
+                        "Candies per friend": ""
+                    },
+                    "answerSentence": "∴ You can give candies to _____ friends, and _____ candies will be left.",
+                    "correctAnswers": {
+                        "Total candies": "{dividend}",
+                        "Candies per friend": "{divisor}",
+                        "Number of friends": "{quotient}",
+                        "Remaining candies": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A train has {dividend} seats and {divisor} carriages. If seats are equally divided, how many seats are there in each carriage and how many extra seats are there?",
+                    "toFind": "The number of seats per carriage and the extra seats",
+                    "given": {
+                        "Total seats": "",
+                        "Number of carriages": ""
+                    },
+                    "answerSentence": "∴ Each carriage has _____ seats, and there are _____ extra seats.",
+                    "correctAnswers": {
+                        "Total seats": "{dividend}",
+                        "Number of carriages": "{divisor}",
+                        "Seats per carriage": "{quotient}",
+                        "Extra seats": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "An orchard has {dividend} apples to pack into boxes of {divisor}. How many boxes will be full and how many apples will be left?",
+                    "toFind": "The number of full boxes and the remaining apples",
+                    "given": {
+                        "Total apples": "",
+                        "Apples per box": ""
+                    },
+                    "answerSentence": "∴ There will be _____ full boxes, and _____ apples will be left.",
+                    "correctAnswers": {
+                        "Total apples": "{dividend}",
+                        "Apples per box": "{divisor}",
+                        "Number of boxes": "{quotient}",
+                        "Remaining apples": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A movie theater has {dividend} seats and rows of {divisor}. How many full rows are there and how many seats are in the incomplete row?",
+                    "toFind": "The number of full rows and seats in the incomplete row",
+                    "given": {
+                        "Total seats": "",
+                        "Seats per row": ""
+                    },
+                    "answerSentence": "∴ There are _____ full rows, and the incomplete row has _____ seats.",
+                    "correctAnswers": {
+                        "Total seats": "{dividend}",
+                        "Seats per row": "{divisor}",
+                        "Full rows": "{quotient}",
+                        "Seats in incomplete row": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "{dividend} passengers are waiting and each taxi can take {divisor} passengers. How many taxis are needed and how many seats will be empty in the last taxi?",
+                    "toFind": "The number of taxis needed and empty seats in the last taxi",
+                    "given": {
+                        "Total passengers": "",
+                        "Passengers per taxi": ""
+                    },
+                    "answerSentence": "∴ _____ taxis are needed, and the last taxi has _____ empty seats.",
+                    "correctAnswers": {
+                        "Total passengers": "{dividend}",
+                        "Passengers per taxi": "{divisor}",
+                        "Number of taxis": "{quotient + (remainder > 0 ? 1 : 0)}",
+                        "Empty seats": "{remainder === 0 ? 0 : divisor - remainder}"
+                    }
+                },
+                {
+                    "questionText": "There are {dividend} cupcakes and {divisor} plates. If you place cupcakes equally on each plate, how many cupcakes are on each plate and how many cupcakes are left?",
+                    "toFind": "The number of cupcakes per plate and the remaining cupcakes",
+                    "given": {
+                        "Total cupcakes": "",
+                        "Number of plates": ""
+                    },
+                    "answerSentence": "∴ Each plate has _____ cupcakes, and _____ cupcakes are left.",
+                    "correctAnswers": {
+                        "Total cupcakes": "{dividend}",
+                        "Number of plates": "{divisor}",
+                        "Cupcakes per plate": "{quotient}",
+                        "Remaining cupcakes": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A rope {dividend} meters long is cut into pieces of {divisor} meters. How many full pieces are there and how much rope is left?",
+                    "toFind": "The number of full pieces and the remaining rope",
+                    "given": {
+                        "Total length": "",
+                        "Length per piece": ""
+                    },
+                    "answerSentence": "∴ There are _____ full pieces, and _____ meters of rope left.",
+                    "correctAnswers": {
+                        "Total length": "{dividend}",
+                        "Length per piece": "{divisor}",
+                        "Number of pieces": "{quotient}",
+                        "Remaining length": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "Jenny has {dividend} stickers and wants to give an equal number to {divisor} friends. How many stickers does each friend get and how many stickers does Jenny keep?",
+                    "toFind": "The number of stickers per friend and the stickers Jenny keeps",
+                    "given": {
+                        "Total stickers": "",
+                        "Number of friends": ""
+                    },
+                    "answerSentence": "∴ Each friend gets _____ stickers, and Jenny keeps _____ stickers.",
+                    "correctAnswers": {
+                        "Total stickers": "{dividend}",
+                        "Number of friends": "{divisor}",
+                        "Stickers per friend": "{quotient}",
+                        "Stickers Jenny keeps": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A bakery made {dividend} muffins and packs them into boxes holding {divisor} muffins each. How many boxes are used and how many muffins are left unpacked?",
+                    "toFind": "The number of boxes used and the unpacked muffins",
+                    "given": {
+                        "Total muffins": "",
+                        "Muffins per box": ""
+                    },
+                    "answerSentence": "∴ _____ boxes are used, and _____ muffins are left unpacked.",
+                    "correctAnswers": {
+                        "Total muffins": "{dividend}",
+                        "Muffins per box": "{divisor}",
+                        "Number of boxes": "{quotient}",
+                        "Remaining muffins": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "Sam has {dividend} coins and wants to arrange them into stacks of {divisor}. How many full stacks will he have and how many coins will be left?",
+                    "toFind": "The number of full stacks and the remaining coins",
+                    "given": {
+                        "Total coins": "",
+                        "Coins per stack": ""
+                    },
+                    "answerSentence": "∴ He will have _____ full stacks, and _____ coins will be left.",
+                    "correctAnswers": {
+                        "Total coins": "{dividend}",
+                        "Coins per stack": "{divisor}",
+                        "Number of stacks": "{quotient}",
+                        "Remaining coins": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "A school has {dividend} pencils and {divisor} classrooms. If pencils are divided equally, how many pencils does each classroom get and how many pencils are left?",
+                    "toFind": "The number of pencils per classroom and the remaining pencils",
+                    "given": {
+                        "Total pencils": "",
+                        "Number of classrooms": ""
+                    },
+                    "answerSentence": "∴ Each classroom gets _____ pencils, and _____ pencils are left.",
+                    "correctAnswers": {
+                        "Total pencils": "{dividend}",
+                        "Number of classrooms": "{divisor}",
+                        "Pencils per classroom": "{quotient}",
+                        "Remaining pencils": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "Anna has {dividend} balloons and wants to decorate {divisor} tables equally. How many balloons will be on each table and how many balloons will be left?",
+                    "toFind": "The number of balloons per table and the remaining balloons",
+                    "given": {
+                        "Total balloons": "",
+                        "Number of tables": ""
+                    },
+                    "answerSentence": "∴ Each table will have _____ balloons, and _____ balloons will be left.",
+                    "correctAnswers": {
+                        "Total balloons": "{dividend}",
+                        "Number of tables": "{divisor}",
+                        "Balloons per table": "{quotient}",
+                        "Remaining balloons": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "There are {dividend} pages in a book and {divisor} chapters. If pages are divided equally among chapters, how many pages are in each chapter and how many pages are extra?",
+                    "toFind": "The number of pages per chapter and the extra pages",
+                    "given": {
+                        "Total pages": "",
+                        "Number of chapters": ""
+                    },
+                    "answerSentence": "∴ Each chapter has _____ pages, and there are _____ extra pages.",
+                    "correctAnswers": {
+                        "Total pages": "{dividend}",
+                        "Number of chapters": "{divisor}",
+                        "Pages per chapter": "{quotient}",
+                        "Extra pages": "{remainder}"
+                    }
+                },
+                {
+                    "questionText": "Bob has {dividend} stamps and wants to fill albums that hold {divisor} stamps each. How many albums can he fill and how many stamps will he have left?",
+                    "toFind": "The number of albums filled and the remaining stamps",
+                    "given": {
+                        "Total stamps": "",
+                        "Stamps per album": ""
+                    },
+                    "answerSentence": "∴ He can fill _____ albums, and _____ stamps will be left.",
+                    "correctAnswers": {
+                        "Total stamps": "{dividend}",
+                        "Stamps per album": "{divisor}",
+                        "Number of albums": "{quotient}",
+                        "Remaining stamps": "{remainder}"
+                    }
+                },
+                // Total of 30 templates
+            ];
+
+            // List of items and their plural forms
+            let itemsList = [
+                { singular: "pencil", plural: "pencils" },
+                { singular: "book", plural: "books" },
+                { singular: "apple", plural: "apples" },
+                { singular: "orange", plural: "oranges" },
+                { singular: "toy", plural: "toys" },
+                { singular: "cookie", plural: "cookies" },
+                { singular: "bush", plural: "bushes" },
+                { singular: "leaf", plural: "leaves" },
+                { singular: "mouse", plural: "mice" },
+                { singular: "sheep", plural: "sheep" },
+                { singular: "child", plural: "children" },
+                { singular: "foot", plural: "feet" },
+                { singular: "tooth", plural: "teeth" },
+                { singular: "person", plural: "people" },
+                { singular: "knife", plural: "knives" },
+                { singular: "man", plural: "men" },
+                { singular: "woman", plural: "women" },
+                { singular: "potato", plural: "potatoes" },
+                { singular: "tomato", plural: "tomatoes" },
+            ];
+
+            // Choose a random item
+            let itemObj = itemsList[getRandomInt(0, itemsList.length - 1)];
+            let item = itemObj.singular;
+            let itemPlural = itemObj.plural;
+
+            // Select a random template
+            let template = templates[getRandomInt(0, templates.length - 1)];
+
+            // Function to capitalize first letter
+            function capitalize(word) {
+                return word.charAt(0).toUpperCase() + word.slice(1);
             }
-        },
-        {
-            "questionText": "{dividend} candies are to be shared equally among {divisor} children. How many candies will each child get and how many candies will be left?",
-            "wordBank": ["candies", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
-            "toFind": "The number of candies each child gets and the remaining candies",
-            "given": {
-                "Total candies": "",
-                "Number of children": ""
-            },
-            "answerSentence": "∴ Each child gets _____ candies, and _____ candies are left.",
-            "correctAnswers": {
-                "Total candies": "{dividend}",
-                "Number of children": "{divisor}",
-                "Candies per child": "{quotient}",
-                "Remaining candies": "{remainder}"
+
+            // Replace placeholders in questionText
+            let questionText = template.questionText
+                .replace(/{dividend}/g, dividend)
+                .replace(/{divisor}/g, divisor)
+                .replace(/{item}/g, item)
+                .replace(/{itemPlural}/g, itemPlural)
+                .replace(/{ItemPlural}/g, capitalize(itemPlural))
+                .replace(/{Item}/g, capitalize(item))
+                .replace(/{quotient}/g, quotient)
+                .replace(/{remainder}/g, remainder)
+                .replace(/{quotient \+ \(remainder > 0 \? 1 : 0\)}/g, quotient + (remainder > 0 ? 1 : 0))
+                .replace(/{remainder === 0 \? divisor : remainder}/g, remainder === 0 ? divisor : remainder)
+                .replace(/{remainder === 0 \? 0 : divisor - remainder}/g, remainder === 0 ? 0 : divisor - remainder);
+
+            // Replace placeholders in toFind
+            let toFind = template.toFind
+                .replace(/{item}/g, item)
+                .replace(/{itemPlural}/g, itemPlural)
+                .replace(/{ItemPlural}/g, capitalize(itemPlural));
+
+            // Replace placeholders in given
+            let given = {};
+            for (let key in template.given) {
+                let newKey = key.replace(/{item}/g, item)
+                    .replace(/{itemPlural}/g, itemPlural)
+                    .replace(/{ItemPlural}/g, capitalize(itemPlural))
+                    .replace(/{Item}/g, capitalize(item));
+                given[newKey] = "";
             }
-        },
-        {
-            "questionText": "A farmer has {dividend} {itemPlural} and packs them equally into baskets of {divisor}. How many baskets does he use and how many {itemPlural} remain?",
-            "wordBank": ["{itemPlural}", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
-            "toFind": "The number of baskets used and the remaining {itemPlural}",
-            "given": {
-                "Total {itemPlural}": "",
-                "{ItemPlural} per basket": ""
-            },
-            "answerSentence": "∴ He uses _____ baskets, and _____ {itemPlural} remain.",
-            "correctAnswers": {
-                "Total {itemPlural}": "{dividend}",
-                "{ItemPlural} per basket": "{divisor}",
-                "Number of baskets": "{quotient}",
-                "Remaining {itemPlural}": "{remainder}"
+
+            // Replace placeholders in answerSentence
+            let answerSentence = template.answerSentence
+                .replace(/{item}/g, item)
+                .replace(/{itemPlural}/g, itemPlural)
+                .replace(/{ItemPlural}/g, capitalize(itemPlural))
+                .replace(/{Item}/g, capitalize(item));
+
+            // Replace blanks with input fields
+            answerSentence = answerSentence.replace(/_____/g, "_____");
+
+            // Replace placeholders in correctAnswers
+            let correctAnswers = {};
+            for (let key in template.correctAnswers) {
+                let newKey = key.replace(/{item}/g, item)
+                    .replace(/{itemPlural}/g, itemPlural)
+                    .replace(/{ItemPlural}/g, capitalize(itemPlural))
+                    .replace(/{Item}/g, capitalize(item));
+                let value = template.correctAnswers[key]
+                    .replace(/{dividend}/g, dividend)
+                    .replace(/{divisor}/g, divisor)
+                    .replace(/{quotient}/g, quotient)
+                    .replace(/{remainder}/g, remainder)
+                    .replace(/{quotient \+ \(remainder > 0 \? 1 : 0\)}/g, quotient + (remainder > 0 ? 1 : 0))
+                    .replace(/{remainder === 0 \? divisor : remainder}/g, remainder === 0 ? divisor : remainder)
+                    .replace(/{remainder === 0 \? 0 : divisor - remainder}/g, remainder === 0 ? 0 : divisor - remainder);
+                correctAnswers[newKey] = value;
             }
-        },
-        {
-            "questionText": "There are {dividend} pages to be divided equally into books with {divisor} pages each. How many books can be made and how many pages will be left unused?",
-            "wordBank": ["pages", "books", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
-            "toFind": "The number of books that can be made and the remaining pages",
-            "given": {
-                "Total pages": "",
-                "Pages per book": ""
-            },
-            "answerSentence": "∴ _____ books can be made, and _____ pages will be left unused.",
-            "correctAnswers": {
-                "Total pages": "{dividend}",
-                "Pages per book": "{divisor}",
-                "Number of books": "{quotient}",
-                "Remaining pages": "{remainder}"
-            }
-        },
-        {
-            "questionText": "A school has {dividend} students and wants to form teams of {divisor} students each. How many teams can be formed and how many students will be without a team?",
-            "wordBank": ["students", "teams", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
-            "toFind": "The number of teams and the remaining students",
-            "given": {
-                "Total students": "",
-                "Students per team": ""
-            },
-            "answerSentence": "∴ _____ teams can be formed, and _____ students will be without a team.",
-            "correctAnswers": {
-                "Total students": "{dividend}",
-                "Students per team": "{divisor}",
-                "Number of teams": "{quotient}",
-                "Remaining students": "{remainder}"
-            }
-        },
-        {
-            "questionText": "{dividend} {itemPlural} are to be placed equally on {divisor} shelves. How many {itemPlural} will be on each shelf and how many {itemPlural} will be left?",
-            "wordBank": ["{itemPlural}", "shelves", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
-            "toFind": "The number of {itemPlural} per shelf and the remaining {itemPlural}",
-            "given": {
-                "Total {itemPlural}": "",
-                "Number of shelves": ""
-            },
-            "answerSentence": "∴ Each shelf will have _____ {itemPlural}, and _____ {itemPlural} will be left.",
-            "correctAnswers": {
-                "Total {itemPlural}": "{dividend}",
-                "Number of shelves": "{divisor}",
-                "{ItemPlural} per shelf": "{quotient}",
-                "Remaining {itemPlural}": "{remainder}"
-            }
-        },
-        {
-            "questionText": "Mike has {dividend} marbles and puts {divisor} marbles into each bag. How many bags does he need and how many marbles will be left over?",
-            "wordBank": ["marbles", "bags", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
-            "toFind": "The number of bags needed and the remaining marbles",
-            "given": {
-                "Total marbles": "",
-                "Marbles per bag": ""
-            },
-            "answerSentence": "∴ He needs _____ bags, and _____ marbles will be left over.",
-            "correctAnswers": {
-                "Total marbles": "{dividend}",
-                "Marbles per bag": "{divisor}",
-                "Number of bags": "{quotient}",
-                "Remaining marbles": "{remainder}"
-            }
-        },
-        {
-            "questionText": "A library has {dividend} books to place on shelves that hold {divisor} books each. How many shelves will be fully occupied and how many books will be left?",
-            "wordBank": ["books", "shelves", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
-            "toFind": "The number of shelves fully occupied and the remaining books",
-            "given": {
-                "Total books": "",
-                "Books per shelf": ""
-            },
-            "answerSentence": "∴ _____ shelves will be fully occupied, and _____ books will be left.",
-            "correctAnswers": {
-                "Total books": "{dividend}",
-                "Books per shelf": "{divisor}",
-                "Number of shelves": "{quotient}",
-                "Remaining books": "{remainder}"
-            }
-        },
-        {
-            "questionText": "Sarah has {dividend} stickers and wants to place {divisor} stickers on each page of her album. How many pages will she fill and how many stickers will be left?",
-            "wordBank": ["stickers", "pages", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
-            "toFind": "The number of pages filled and the remaining stickers",
-            "given": {
-                "Total stickers": "",
-                "Stickers per page": ""
-            },
-            "answerSentence": "∴ She will fill _____ pages, and _____ stickers will be left.",
-            "correctAnswers": {
-                "Total stickers": "{dividend}",
-                "Stickers per page": "{divisor}",
-                "Number of pages": "{quotient}",
-                "Remaining stickers": "{remainder}"
-            }
-        },
-        {
-            "questionText": "A bakery has {dividend} cookies and packs them into boxes of {divisor} cookies each. How many boxes can be made and how many cookies will remain unpacked?",
-            "wordBank": ["cookies", "boxes", "{dividend}", "{divisor}", "{quotient}", "{remainder}"],
-            "toFind": "The number of boxes made and the remaining cookies",
-            "given": {
-                "Total cookies": "",
-                "Cookies per box": ""
-            },
-            "answerSentence": "∴ _____ boxes can be made, and _____ cookies will remain unpacked.",
-            "correctAnswers": {
-                "Total cookies": "{dividend}",
-                "Cookies per box": "{divisor}",
-                "Number of boxes": "{quotient}",
-                "Remaining cookies": "{remainder}"
-            }
-        },
-        // Add more templates as needed
-    ];
 
-    // List of items and their plural forms
-    let itemsList = [
-        { singular: "pencil", plural: "pencils" },
-        { singular: "book", plural: "books" },
-        { singular: "apple", plural: "apples" },
-        { singular: "orange", plural: "oranges" },
-        { singular: "toy", plural: "toys" },
-        { singular: "cookie", plural: "cookies" },
-        { singular: "bush", plural: "bushes" },
-        { singular: "leaf", plural: "leaves" },
-        { singular: "mouse", plural: "mice" },
-        { singular: "sheep", plural: "sheep" },
-        { singular: "child", plural: "children" },
-        { singular: "foot", plural: "feet" },
-        { singular: "tooth", plural: "teeth" },
-        { singular: "person", plural: "people" },
-        { singular: "knife", plural: "knives" },
-        { singular: "man", plural: "men" },
-        { singular: "woman", plural: "women" },
-        { singular: "potato", plural: "potatoes" },
-        { singular: "tomato", plural: "tomatoes" },
-    ];
-
-    // Choose a random item
-    let itemObj = itemsList[getRandomInt(0, itemsList.length - 1)];
-    let item = itemObj.singular;
-    let itemPlural = itemObj.plural;
-
-    // Select a random template
-    let template = templates[getRandomInt(0, templates.length - 1)];
-
-    // Function to capitalize first letter
-    function capitalize(word) {
-        return word.charAt(0).toUpperCase() + word.slice(1);
-    }
-
-    // Replace placeholders in questionText
-    let questionText = template.questionText
-        .replace(/{dividend}/g, dividend)
-        .replace(/{divisor}/g, divisor)
-        .replace(/{item}/g, item)
-        .replace(/{itemPlural}/g, itemPlural)
-        .replace(/{ItemPlural}/g, capitalize(itemPlural))
-        .replace(/{Item}/g, capitalize(item))
-        .replace(/{quotient}/g, quotient)
-        .replace(/{remainder}/g, remainder);
-
-    // Replace placeholders in wordBank
-    let wordBank = template.wordBank.map(word => {
-        return word.replace(/{dividend}/g, dividend)
-            .replace(/{divisor}/g, divisor)
-            .replace(/{item}/g, item)
-            .replace(/{itemPlural}/g, itemPlural)
-            .replace(/{ItemPlural}/g, capitalize(itemPlural))
-            .replace(/{Item}/g, capitalize(item))
-            .replace(/{quotient}/g, quotient)
-            .replace(/{remainder}/g, remainder);
-    });
-
-    // Replace placeholders in toFind
-    let toFind = template.toFind
-        .replace(/{item}/g, item)
-        .replace(/{itemPlural}/g, itemPlural)
-        .replace(/{ItemPlural}/g, capitalize(itemPlural));
-
-    // Replace placeholders in given
-    let given = {};
-    for (let key in template.given) {
-        let newKey = key.replace(/{item}/g, item)
-            .replace(/{itemPlural}/g, itemPlural)
-            .replace(/{ItemPlural}/g, capitalize(itemPlural))
-            .replace(/{Item}/g, capitalize(item));
-        given[newKey] = "";
-    }
-
-    // Replace placeholders in answerSentence
-    let answerSentence = template.answerSentence
-        .replace(/{item}/g, item)
-        .replace(/{itemPlural}/g, itemPlural)
-        .replace(/{ItemPlural}/g, capitalize(itemPlural))
-        .replace(/{Item}/g, capitalize(item));
-
-    // Replace blanks with input fields
-    answerSentence = answerSentence.replace(/_____/g, "_____");
-
-    // Replace placeholders in correctAnswers
-    let correctAnswers = {};
-    for (let key in template.correctAnswers) {
-        let newKey = key.replace(/{item}/g, item)
-            .replace(/{itemPlural}/g, itemPlural)
-            .replace(/{ItemPlural}/g, capitalize(itemPlural))
-            .replace(/{Item}/g, capitalize(item));
-        let value = template.correctAnswers[key]
-            .replace(/{dividend}/g, dividend)
-            .replace(/{divisor}/g, divisor)
-            .replace(/{quotient}/g, quotient)
-            .replace(/{remainder}/g, remainder);
-        correctAnswers[newKey] = value;
-    }
-
-    return {
-        questionText: questionText,
-        wordBank: wordBank,
-        toFind: toFind,
-        given: given,
-        answerSentence: answerSentence,
-        correctAnswers: correctAnswers
-    };
-}
+            return {
+                questionText: questionText,
+                toFind: toFind,
+                given: given,
+                answerSentence: answerSentence,
+                correctAnswers: correctAnswers
+            };
+        }
 
         function showQuestion() {
             document.getElementById('feedback').textContent = '';
@@ -619,9 +918,6 @@
             document.getElementById('question-number').textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
             document.getElementById('question').textContent = questionObj.questionText;
             document.getElementById('score').textContent = `${playerName}'s Score: ${score}`;
-
-            // Display word bank
-            document.getElementById('word-bank').innerHTML = `<strong>Word Bank:</strong> ${questionObj.wordBank.join(', ')}`;
 
             // Create answer section with blanks
             let answerHTML = `<p><strong>To find:</strong> ${questionObj.toFind}</p>`;
